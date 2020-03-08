@@ -1,0 +1,8 @@
+Chcac przetwarzac obrazy in real time nalezy zwrócic uwage ze obrazy kierowane na wejscie algorytmu musza spelniac pewne wymagania, a wiec moze byc niezbedna wstepna obróbka. Operacje wstepnej obróbki nie sa czescia algorytmu wiec nie mozna ich ujac w statystykach, ale moga byc niezbedne do dostosowania obrazu do wymagan a priori przygotowanego kodu.
+
+Specyfikacja algorytmu frameDiffDetectionRGB
+na wejscie algorytmu podawane sa klatki na których algorytm powinien wykonac operacje róznicy.
+Wejscie:
+Na wejsciu wymagane sa 2 klatki filmu przy zalozeniu statycznosci tla. Klatki musza miec jednakowa rozdzielczosc.
+Operacja: Algorytm wykonuje odejmowanie pikseli o odpowiadajacych sobie wspólrzednych.
+Wyjscie:

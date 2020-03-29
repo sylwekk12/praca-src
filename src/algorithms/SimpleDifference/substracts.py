@@ -1,12 +1,7 @@
 import cv2
 import numpy as np
 
-#Default True, can be changed if needed
-DEBUG_MODE = True
-
 #Substractor works correctly with 8 bits depth
-
-
 
 class Substractor:
     def __init__(self, frame):
@@ -21,21 +16,59 @@ class Substractor:
 class SubstractorWithBuffer:
     def __init__(self, frameContainer):
         self.frameContainer = frameContainer
-        self.containerCapacity = size(self.frameContainer)
+        self.containerCapacity = len(self.frameContainer)
         if self.containerCapacity == 0:
             raise Exception("Empty frame container")
         if frameContainer[0].dtype.itemsize != 1:
             raise Exception("Unsupported bit depth")
-    def calculate(self, frame, treshold, bufferSize):
-        resultFrame = self.frameContainer[0]*0
-        for frame in self.frameContainer:
-            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameStored), treshold, 255, cv2.THRESH_BINARY)
+    def calculate(self, frame, treshold):
+        resultFrame = self.frameContainer[0]*0.0 #init Zero matrix
+        for frameI in self.frameContainer:
+            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, frameI), treshold, 255, cv2.THRESH_BINARY)
             resultFrame += diffrenceFrame/self.containerCapacity
         del self.frameContainer[0]
         self.frameContainer.append(frame)
         return resultFrame
 
-#params
+class SubstractorWithBufferDampingEuler:
+    def __init__(self, frameContainer):
+        self.frameContainer = frameContainer
+        self.containerCapacity = len(self.frameContainer)
+        if self.containerCapacity == 0:
+            raise Exception("Empty frame container")
+        if frameContainer[0].dtype.itemsize != 1:
+            raise Exception("Unsupported bit depth")
+    def calculate(self, frame, treshold):
+        resultFrame = self.frameContainer[0]*0.0 #init Zero matrix
+        for i in range(self.containerCapacity-1, 0, -1):
+            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameContainer[i]), treshold, 255, cv2.THRESH_BINARY)
+            resultFrame += diffrenceFrame*np.exp(-i)
+        resultFrame /= (self.containerCapacity*((1-1/(np.exp(self.containerCapacity)))/(1-1/np.exp(1))))
+        del self.frameContainer[0]
+        self.frameContainer.append(frame)
+        return resultFrame
+
+class SubstractorWithBufferDampingLin:
+    def __init__(self, frameContainer, a=1):
+        self.frameContainer = frameContainer
+        self.containerCapacity = len(self.frameContainer)
+        if self.containerCapacity == 0:
+            raise Exception("Empty frame container")
+        if frameContainer[0].dtype.itemsize != 1:
+            raise Exception("Unsupported bit depth")
+        self.a = a
+    def calculate(self, frame, treshold):
+        resultFrame = self.frameContainer[0]*0.0 #init Zero matrix
+        for i in range(1,self.containerCapacity+1):
+            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameContainer[j]), treshold, 255, cv2.THRESH_BINARY)
+            resultFrame += diffrenceFrame*self.a*(i-1)+1
+        max = self.a*(self.containerCapacity-1)+1
+        resultFrame /= (max*(max+1)/2)
+        del self.frameContainer[0]
+        self.frameContainer.append(frame)
+        return resultFrame
+
+#TU SA FILTRY
 #frame1,frame2  - frames to compare in algorithm
 #mask           - optional argument useful for videos with HUD
 #blur           - optional blur filter, correct values: 0,1,3,5; default: 1

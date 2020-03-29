@@ -1,25 +1,32 @@
 from reader import VideoReader
-from algorithms.substracts import Substractor
+from algorithms.SimpleDifference import substracts
 from executor import TestManager
 import cv2
 
-videoPath = "../data/testVideo1/v1.avi"
-maskPath = "../data/testVideo1/m.png"
+videoPath = "../data/hard.mp4"
+maskPath = None #"../data/testVideo1/m.png"
 
-##init Input video stream
-myReadObject = VideoReader(0)
-myReadObject.setMask(maskPath)
+########################################################################################################################
+###init Input video streams
+camera1 = VideoReader(videoPath,10)
+camera2 = VideoReader(videoPath,10)
+#myReadObject.setMask(maskPath) //if vido need special mask
 
-#Init algorithm
-frameStart = myReadObject.getFrame()
-s1 = Substractor(frameStart)
+########################################################################################################################
+###Init algorithms
+    #1 Simply sybstr
+initFame = camera1.getFrame()
+algorithmSubstr1 = substracts.Substractor(initFame)
 
-#start Executor
-manTest = TestManager(myReadObject,s1)
-manTest.run(s1.calculateWithBuffer, ([100, 8]))
+    #2 Substr with n containter
+initFramesContainer1 = camera2.getFramesContainer(10)
+algorithmSubstrBuffer2 = substracts.SubstractorWithBufferDampingEuler(initFramesContainer1)
 
-# while(myReadObject.isFrameAvaliable() and ord("q") != cv2.waitKey(1)):
-#
-#    res = s1.calculate(myReadObject.getFrame())
-#    #myReadObject.skipFrame(1)
-#    cv2.imshow("",res)
+########################################################################################################################
+# ###start Executors Section
+
+manTest1 = TestManager(camera1, algorithmSubstr1)
+manTest1.run(algorithmSubstr1.calculate, ([20]))
+
+manTest2 = TestManager(camera2, algorithmSubstrBuffer2)
+manTest2.run(algorithmSubstrBuffer2.calculate, ([20]))

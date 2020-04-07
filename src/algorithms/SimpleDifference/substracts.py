@@ -11,7 +11,7 @@ class Substractor:
     def calculate(self, frame, treshold):
         isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameStored), treshold, 255,cv2.THRESH_BINARY)
         self.frameStored = frame
-        return diffrenceFrame
+        return cv2.convertScaleAbs(diffrenceFrame)
 
 class SubstractorWithBuffer:
     def __init__(self, frameContainer):
@@ -28,7 +28,7 @@ class SubstractorWithBuffer:
             resultFrame += diffrenceFrame/self.containerCapacity
         del self.frameContainer[0]
         self.frameContainer.append(frame)
-        return resultFrame
+        return cv2.convertScaleAbs(resultFrame)
 
 class SubstractorWithBufferDampingEuler:
     def __init__(self, frameContainer):
@@ -38,15 +38,17 @@ class SubstractorWithBufferDampingEuler:
             raise Exception("Empty frame container")
         if frameContainer[0].dtype.itemsize != 1:
             raise Exception("Unsupported bit depth")
+        resultFrame = self.frameContainer[0]*0.0 #init Zero matrix
     def calculate(self, frame, treshold):
         resultFrame = self.frameContainer[0]*0.0 #init Zero matrix
-        for i in range(self.containerCapacity-1, 0, -1):
-            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameContainer[i]), treshold, 255, cv2.THRESH_BINARY)
-            resultFrame += diffrenceFrame*np.exp(-i)
-        resultFrame /= (self.containerCapacity*((1-1/(np.exp(self.containerCapacity)))/(1-1/np.exp(1))))
+        for i in range(self.containerCapacity, 0, -1):
+            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameContainer[-i]), treshold, 255, cv2.THRESH_BINARY)
+            resultFrame += diffrenceFrame*np.exp(-i+1)
+        scalar = (self.containerCapacity*((1-1/(np.exp(self.containerCapacity)))/(1-1/np.exp(1))))
+        resultFrame /= scalar/10
         del self.frameContainer[0]
         self.frameContainer.append(frame)
-        return resultFrame
+        return cv2.convertScaleAbs(resultFrame)
 
 class SubstractorWithBufferDampingLin:
     def __init__(self, frameContainer, a=1):
@@ -59,14 +61,15 @@ class SubstractorWithBufferDampingLin:
         self.a = a
     def calculate(self, frame, treshold):
         resultFrame = self.frameContainer[0]*0.0 #init Zero matrix
-        for i in range(1,self.containerCapacity+1):
-            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameContainer[j]), treshold, 255, cv2.THRESH_BINARY)
-            resultFrame += diffrenceFrame*self.a*(i-1)+1
-        max = self.a*(self.containerCapacity-1)+1
-        resultFrame /= (max*(max+1)/2)
+        for i in range(self.containerCapacity):
+            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameContainer[i]), treshold, 255, cv2.THRESH_BINARY)
+            scaling = self.a*(i-1+1)+1.0
+            resultFrame += (diffrenceFrame*scaling)
+        max = self.a*(self.containerCapacity-1)+1.0 #max value ciagu
+        resultFrame /= (max*(max+1)/2)*1.0
         del self.frameContainer[0]
         self.frameContainer.append(frame)
-        return resultFrame
+        return cv2.convertScaleAbs(resultFrame)
 
 #TU SA FILTRY
 #frame1,frame2  - frames to compare in algorithm

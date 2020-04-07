@@ -15,7 +15,7 @@ class CameraConfiguration:
         self.height = cam.get(cv2.CV_CAP_PROP_FRAME_HEIGHT)
 
 class VideoReader:
-    def __init__(self, filePath, frameToSkip=0):
+    def __init__(self, filePath, greyScale=False,frameToSkip=0):
         self.camera = cv2.VideoCapture(filePath)
         if not self.camera.isOpened():
             logging.error(f"Cannot open file: {filePath}")
@@ -27,6 +27,7 @@ class VideoReader:
             raise Exception("Failed: read init Frame")
         self.mask = None
         self.frameToSkip = frameToSkip
+        self.greyScaleFlag = greyScale
 
     def setMask(self, maskPath):
         self.mask = cv2.imread(maskPath)
@@ -42,10 +43,15 @@ class VideoReader:
         self.skipFrame(self.frameToSkip)
         if self.isFrameAvaliable():
             self.status, self.containedFrame = self.camera.read()
+        if(self.greyScaleFlag == True):
+            retFrame = cv2.cvtColor(retFrame, cv2.COLOR_BGR2GRAY, dstCn=1)
         if self.mask is not None:
             return retFrame&self.mask
         else:
             return retFrame
+
+    def greyScaleSet(self, status):
+        self.greyScaleFlag = status
 
     def isFrameAvaliable(self):
         if self.status:
@@ -63,8 +69,9 @@ class VideoReader:
     def getFramesContainer(self, n):
         framesList = []
         for i in range(n):
-            self.status, self.containedFrame = self.camera.read()
+            #self.status, self.containedFrame = self.camera.read()
+            recivedFrame = self.getFrame()
             if self.status == False:
                 raise Exception(f"Read frame container [{i}] of [{n}] failed")
-            framesList.append(self.containedFrame)
+            framesList.append(recivedFrame)
         return framesList

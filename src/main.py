@@ -4,15 +4,15 @@ from algorithms.BackgroundModling import backgroundModeling
 from executor import TestManager
 import cv2
 
-videoPath = "../data/hard.mp4"
+videoPath = "../data/simpleStreet.mp4"
 maskPath = None #"../data/testVideo1/m.png"
 
 ########################################################################################################################
 ###init Input video streams
-# camera1 = VideoReader(videoPath, greyScale=True,frameToSkip=10)
-# camera2 = VideoReader(videoPath, greyScale=True,frameToSkip=10)
-camera3 = VideoReader(0, greyScale=True,frameToSkip=10)
-#camera = VideoReader(0, greyScale=True,frameToSkip=10)
+# camera1 = VideoReader(videoPath, frameToSkip=10)
+# camera2 = VideoReader(videoPath, frameToSkip=10)
+# camera3 = VideoReader(videoPath, frameToSkip=1)
+camera = VideoReader(videoPath,frameToSkip=0)
 #myReadObject.setMask(maskPath) //if vido need special mask
 
 ########################################################################################################################
@@ -26,11 +26,11 @@ camera3 = VideoReader(0, greyScale=True,frameToSkip=10)
 # algorithmSubstrBuffer2 = substracts.SubstractorWithBufferDampingEuler(initFramesContainer1)
 #
 #     #3
-initFramesContainer2 = camera3.getFramesContainer(10)
-algorithmSubstrBuffer3 = substracts.SubstractorWithBufferDampingLin(initFramesContainer2)
+# initFramesContainer2 = camera3.getFramesContainer(5)
+# algorithmSubstrBuffer3 = substracts.SubstractorWithBufferDampingLinGeom(initFramesContainer2, 1)
 #     #4
-# initFramesContainer = camera.getFramesContainer(10)
-# algorithm = backgroundModeling.backgroundModelMean(initFramesContainer)
+initFrame = camera.getFrame()
+algorithm = backgroundModeling.backgroundModelMeanAccelerated(initFrame)
 ########################################################################################################################
 # ###start Executors Section
 #
@@ -40,8 +40,8 @@ algorithmSubstrBuffer3 = substracts.SubstractorWithBufferDampingLin(initFramesCo
 # manTest2 = TestManager(camera2, algorithmSubstrBuffer2)
 # manTest2.run(algorithmSubstrBuffer2.calculate, ([30]))
 #
-manTest3 = TestManager(camera3, algorithmSubstrBuffer3)
-manTest3.run(algorithmSubstrBuffer3.calculate, ([30]))
+# manTest3 = TestManager(camera3, algorithmSubstrBuffer3)
+# manTest3.run(algorithmSubstrBuffer3.calculate, ([40]))
 #
-# manTest4 = TestManager(camera, algorithm)
-# manTest4.run(algorithm.calculate, ([30]))
+manTest4 = TestManager(camera, algorithm)
+manTest4.run(algorithm.calculate, ([128]))

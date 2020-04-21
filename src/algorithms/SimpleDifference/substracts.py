@@ -50,14 +50,14 @@ class SubstractorWithBufferDampingEuler:
         self.frameContainer.append(frame)
         return cv2.convertScaleAbs(resultFrame)
 
-class SubstractorWithBufferDampingLin:
+class SubstractorWithBufferDampingArrth:
     def __init__(self, frameContainer, a=1):
         self.frameContainer = frameContainer
         self.containerCapacity = len(self.frameContainer)
         if self.containerCapacity == 0:
             raise Exception("Empty frame container")
         if frameContainer[0].dtype.itemsize != 1:
-            raise Exception("Unsupported bit depth")
+            raise Exception(f"Unsupported bit depth: {frameContainer[0].dtype.itemsize*8}")
         self.a = a
     def calculate(self, frame, treshold):
         resultFrame = self.frameContainer[0]*0.0 #init Zero matrix
@@ -66,7 +66,32 @@ class SubstractorWithBufferDampingLin:
             scaling = self.a*(i-1+1)+1.0
             resultFrame += (diffrenceFrame*scaling)
         max = self.a*(self.containerCapacity-1)+1.0 #max value ciagu
-        resultFrame /= (max*(max+1)/2)*1.0
+        Sa_n = (self.containerCapacity*(max+1)/2)*1.0
+        resultFrame /= Sa_n
+        del self.frameContainer[0]
+        self.frameContainer.append(frame)
+        return cv2.convertScaleAbs(resultFrame)
+
+class SubstractorWithBufferDampingLinGeom:
+    def __init__(self, frameContainer, a=1):
+        self.frameContainer = frameContainer
+        self.containerCapacity = len(self.frameContainer)
+        if self.containerCapacity == 0:
+            raise Exception("Empty frame container")
+        if frameContainer[0].dtype.itemsize != 1:
+            raise Exception(f"Unsupported bit depth: {frameContainer[0].dtype.itemsize*8}")
+        self.a = a
+    def calculate(self, frame, treshold):
+        resultFrame = self.frameContainer[0]*0.0 #init Zero matrix
+        for i in range(self.containerCapacity):
+            isOk, diffrenceFrame = cv2.threshold(cv2.absdiff(frame, self.frameContainer[i]), treshold, 255, cv2.THRESH_BINARY)
+            scaling = self.a**i*1.0
+            resultFrame += (diffrenceFrame*scaling)
+        if self.a == 1:
+            Sa_n = 1.0
+        else:
+            Sa_n = (1-self.a**(self.containerCapacity))/(1-self.a)*1.0
+        resultFrame /= Sa_n
         del self.frameContainer[0]
         self.frameContainer.append(frame)
         return cv2.convertScaleAbs(resultFrame)

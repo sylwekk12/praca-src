@@ -27,7 +27,7 @@ class backgroundModelMeanWithContainer:
 
 #@frameweigth - frame weigth when is beeing added to background model
 class backgroundModelMeanAccelerated:
-    def __init__(self, initFrame, frameWeigth=0.01):
+    def __init__(self, initFrame, frameWeigth=0.001): #wniosek: im wolniejszy obiekt chcemy wykryć tym niższy współczynnik należy dobrać
         self.modelFrame = initFrame*1.0
         self.frameWeigth = frameWeigth
 

@@ -4,7 +4,7 @@ import logging
 
 ################
 # Stopwatch use:
-# reset->start->stop->reset->
+# reset->start->stop->reset
 ################
 
 class IncorrectStateChange(Exception):

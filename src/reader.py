@@ -22,6 +22,7 @@ class Camera:
             self.mask = cv2.imread(maskPath)
         else:
             self.mask = None
+        self.framesCounter = 0
 
     def UpdateConfig(self, greyscale=None, colorModel=None, maskPath=None):
         if greyscale is not None:
@@ -35,6 +36,8 @@ class Camera:
         isOk, frame = self.cv2Cam.read()
         if not isOk:
             return isOk, frame
+
+        self.framesCounter += 1
 
         if self.colorModel == ColorModel.RGB:
             pass  # frame = cv2.cvtColor(frame, cv2._)
@@ -90,6 +93,9 @@ class VideoReader:
 
     def isFrameAvaliable(self):
         return self.status
+
+    def getcountedFrames(self):
+        return self.camera.framesCounter
 
     def skipFrame(self, numberoFFramesToSkip=1):
         counter = 0

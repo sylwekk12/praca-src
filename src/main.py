@@ -4,7 +4,7 @@ from algorithms.BackgroundModling import backgroundModeling
 from executor import TestManager
 import cv2
 
-videoPath = "../data/simpleStreet.mp4"
+videoPath = "../data/hard.mp4"
 maskPath = None #"../data/testVideo1/m.png"
 
 ########################################################################################################################
@@ -12,7 +12,7 @@ maskPath = None #"../data/testVideo1/m.png"
 # camera1 = VideoReader(videoPath, frameToSkip=10)
 # camera2 = VideoReader(videoPath, frameToSkip=10)
 # camera3 = VideoReader(videoPath, frameToSkip=1)
-camera = VideoReader(videoPath,frameToSkip=0)
+camera = VideoReader(videoPath,frameToSkip=1)
 #myReadObject.setMask(maskPath) //if vido need special mask
 
 ########################################################################################################################
@@ -44,4 +44,4 @@ algorithm = backgroundModeling.backgroundModelMeanAccelerated(initFrame)
 # manTest3.run(algorithmSubstrBuffer3.calculate, ([40]))
 #
 manTest4 = TestManager(camera, algorithm)
-manTest4.run(algorithm.calculate, ([128]))
+manTest4.run(algorithm.calculate, ([50]))

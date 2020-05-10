@@ -13,7 +13,12 @@ class TestManager:
             self.windowName = windowName
         else:
             self.windowName = "executor:"+str(TestManager.execId)
+        self.framesToBreak = None
         TestManager.execId += 1
+
+    def setBreakFrameNumber(self, num):
+        self.framesToBreak = num
+
     #expect method function to execute with given parameters-list
     def run(self, calculateFnc, argListForFnc):
         while (self.input.isFrameAvaliable() and ord("q") != cv2.waitKey(1)):
@@ -24,3 +29,6 @@ class TestManager:
             self.stopwatch.reset()
 
             cv2.imshow(self.windowName, res)
+
+            if(self.framesToBreak is not None and self.input.getcountedFrames() > self.framesToBreak):
+                cv2.waitKey(0)

@@ -1,11 +1,13 @@
 from reader import VideoReader
 from algorithms.SimpleDifference import substracts
 from algorithms.BackgroundModling import backgroundModeling
+from algorithms.AlgorithmHelps import helperHSV
 from executor import TestManager
 import cv2
 
 videoPath = "../data/hard.mp4"
 maskPath = None #"../data/testVideo1/m.png"
+BlueSelectorTest = helperHSV.ColorRangeSelector(*([110,50,50]),*([120,255,255]))
 
 ########################################################################################################################
 ###init Input video streams

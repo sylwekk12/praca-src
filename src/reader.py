@@ -13,7 +13,7 @@ class ColorModel:
 # in other case video pixels are unchanged
 
 class Camera:
-    def __init__(self, cv2Camera, maskPath=None, greyscaleMode=True,
+    def __init__(self, cv2Camera, maskPath=None, greyscaleMode=False,
                  colorModel=ColorModel.RGB):  # TODO: extract parameters to configuration
         self.cv2Cam = cv2Camera
         self.colorModel = colorModel
@@ -54,6 +54,10 @@ class Camera:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # , dstCn=1)
         if self.mask is not None:
             frame = frame & self.mask
+
+        #frame = cv2.blur(frame, (5,5))
+        #frame = cv2.bilateralFilter(frame, 9, 75, 75)
+
         return isOk, frame
 
     def isOpened(self):

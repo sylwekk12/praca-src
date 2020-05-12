@@ -1,4 +1,5 @@
 import cv2
+import time
 import numpy as np
 from stopwatch import Stopwatch
 import threading
@@ -16,7 +17,7 @@ class TestManager:
         self.framesToBreak = None
         TestManager.execId += 1
 
-    def setBreakFrameNumber(self, num):
+    def setBreakOutFrameNumber(self, num):
         self.framesToBreak = num
 
     #expect method function to execute with given parameters-list

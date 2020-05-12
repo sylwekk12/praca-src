@@ -8,7 +8,8 @@ class ColorRangeSelector:
 
     def makeMaskFromRGB(self, imgRGB):
         imgHSV = cv2.cvtColor(imgRGB, cv2.COLOR_BGR2HSV)
-        return cv2.inRange(imgHSV, self.rangeDown, self.rangeUp)
+        imgRangeHSV = cv2.inRange(imgHSV, self.rangeDown, self.rangeUp)
+        return imgRangeHSV #cv2.cvtColor(imgRangeHSV, cv2.COLOR_HSV2BGR)
 
     def selectColorFromImage(self, imgRGB):
         mask = self.makeMaskFromRGB(imgRGB)

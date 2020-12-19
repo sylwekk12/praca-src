@@ -112,6 +112,7 @@ class VideoReader:
         framesList = []
         for i in range(n):
             # self.status, self.containedFrame = self.camera.read()
+            logging.debug(f"getFrameConatiner Loading frame {i} ...")
             receivedFrame = self.getFrame()
             if not self.status:
                 raise Exception(f"Read frame container [{i}] of [{n}] failed")
@@ -122,7 +123,7 @@ class VideoReader:
         if not self.status:
             logging.error(f"Cannot read frame")
             raise Exception("frame was not avaliable, to avoid this error check frame avability before getFrame call")
-        logging.debug(f"frame readed correctly")
+        logging.debug(f"frame has been read correctly")
         retFrame = self.containedFrame
         self.skipFrame(self.frameToSkip)
         if self.isFrameAvaliable():

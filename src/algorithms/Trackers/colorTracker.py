@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from algorithms.AlgorithmHelps import helperHSV
 import statistics as stats
 from functools import reduce
 
@@ -65,7 +64,7 @@ class ColorTracker2: #fork
 
         conturs = sorted(conturs, key=lambda contour: contour.size, reverse=True)
 
-        if conturs[0].size < 150:#TODO: treshold
+        if conturs[0].size < 150:#TODO: threshold
             return frame
 
         M = cv2.moments(conturs[0])
@@ -117,7 +116,7 @@ class ColorTracker3:  # fork
         contur = contoursWithAreaSorted[0][0]
         area = contoursWithAreaSorted[0][1]
 
-        if area < 150: #TODO: treshold
+        if area < 150: #TODO: threshold
             return frame
 
         M = cv2.moments(contur)

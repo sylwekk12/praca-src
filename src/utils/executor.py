@@ -70,7 +70,8 @@ class TestManager:
     def _presentMask(self, frame, mask):
         copyOfFrame = frame.copy()
 
-        mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+        if len(mask.shape) > 2:
+            mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
         for contour in contours:

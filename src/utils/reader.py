@@ -71,9 +71,9 @@ class Camera:
 
 
 class VideoReader:
-    def __init__(self, filePath, frameToSkip=0):
+    def __init__(self, filePath, frameToSkip=0, greyscaleMode=None, mask=None):
         cv2Cam = cv2.VideoCapture(filePath)
-        self.camera = Camera(cv2Cam)
+        self.camera = Camera(cv2Cam, maskPath=mask, greyscaleMode=greyscaleMode)
         if not self.camera.isOpened():
             logging.error(f"Cannot open file: {filePath}")
             raise Exception("Video reader cannot be init")

@@ -17,6 +17,10 @@ class backgroundModelMeanWithContainer:
         self.frameContainer.append(frame)
         isOk, differenceFrame = cv2.threshold(cv2.absdiff(frame * 1.0, backgroundModel), threshold, 255,
                                              cv2.THRESH_BINARY)
+        # kernel = np.ones((7,7), np.uint8)
+        # opening = cv2.morphologyEx(differenceFrame, cv2.MORPH_OPEN, kernel)
+        # cv2.imshow("qwe", opening)
+        # cv2.waitKey(1)
         return cv2.convertScaleAbs(differenceFrame)
 
     def _prepareModel(self):
@@ -38,7 +42,18 @@ class backgroundModelMeanAccelerated:
         isOk, differenceFrame = cv2.threshold(cv2.absdiff(frame * 1.0, self.modelFrame), threshold, 255,
                                              cv2.THRESH_BINARY)
         self.modelFrame = self._prepareModel(frame)
-        return cv2.convertScaleAbs(differenceFrame)
+
+        differenceFrame = cv2.convertScaleAbs(differenceFrame)
+        medianBlur = cv2.medianBlur(differenceFrame, 7)
+        cv2.imshow("ww", differenceFrame)
+        cv2.waitKey(1)
+        kernel = np.ones((7,7), np.float64)
+        opening = cv2.morphologyEx(medianBlur, cv2.MORPH_CLOSE, kernel)
+
+        cv2.imshow("qwe", opening)
+        cv2.waitKey(1)
+
+        return cv2.convertScaleAbs(opening)
 
     def _prepareModel(self, newFrame):
         self.modelFrame = self.modelFrame * (1 - self.frameWeight) + newFrame * self.frameWeight

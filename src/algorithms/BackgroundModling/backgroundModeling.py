@@ -31,6 +31,8 @@ class backgroundModelMeanWithContainer:
         return self.modelFrame
 
 
+
+
 # @frameWeight - frame Weight when is beeing added to background model
 class backgroundModelMeanAccelerated:
     def __init__(self, initFrame,

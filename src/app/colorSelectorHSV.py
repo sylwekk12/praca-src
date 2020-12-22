@@ -10,6 +10,7 @@ from utils import colorHelper
 baseImg = None
 
 ##### alternatevely comment this and press image like 'baseImg = cv2.imread("path to file")'
+#captureCameraVideo = cv2.VideoCapture("../../data/SimpleStreet.mp4")
 captureCameraVideo = cv2.VideoCapture(0)
 
 if not captureCameraVideo.isOpened():
@@ -31,6 +32,7 @@ while True:
 #####
 cv2.destroyAllWindows()
 
+baseImg = cv2.resize(baseImg,(640,490))
 ####################################
 # end section image initialization #
 ####################################

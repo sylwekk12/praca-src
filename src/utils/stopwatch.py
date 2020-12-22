@@ -37,7 +37,6 @@ class Stopwatch:
     def hadleResult(self):
         if self.machine.stat == StopwatchStateEnum.FINISHED:
             result = self.tmStop - self.tmStart
-            #self.machine.reset()  # TODO: oneshotStopwatch?
             return result
         else:
             logging.warning(f"Cannot handle, Machine current state is {self.machine.stat}")
@@ -62,7 +61,7 @@ class StopwatchStateBase(object):
             raise Exception("base ")
 
     def _reset(self):
-        self.tmStart = self.instance.tmStop = tm.clock()
+        self.tmStart = self.instance.tmStop = tm.perf_counter()
 
 
 ##########################################################
@@ -73,7 +72,7 @@ class StopwatchStateInitialized(StopwatchStateBase):
         self.stat = StopwatchStateEnum.NOT_STARTED
 
     def start(self):
-        self.instance.tmStart = tm.clock()
+        self.instance.tmStart = tm.perf_counter()
         self.instance.machine = StopwatchStateStarted(self.instance)
 
     def stop(self):
@@ -91,7 +90,7 @@ class StopwatchStateStarted(StopwatchStateBase):
         raise Exception("Stopwatch already started")
 
     def stop(self):
-        self.instance.tmStop = tm.clock()
+        self.instance.tmStop = tm.perf_counter()
         self.instance.machine = StopwatchStateFinished(self.instance)
 
 

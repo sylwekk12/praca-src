@@ -36,11 +36,6 @@ class ColorRangeSelector:
 
             imgRangeHSV = cv2.bitwise_or(imgRangeH_partDown, imgRangeH_partUp)
             imgRangeHSV = cv2.bitwise_and(imgRangeHSV, imgRangeSV)
-            #
-            # cv2.imshow("d", imgRangeH_partDown)
-            # cv2.waitKey(1)
-            # cv2.imshow("u", imgRangeH_partUp)
-            # cv2.waitKey(1)
             return imgRangeHSV
 
     def selectColorFromImage(self, imgRGB):

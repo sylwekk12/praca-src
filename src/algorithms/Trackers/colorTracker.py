@@ -89,11 +89,13 @@ class ColorTracker2: #fork
 
 
 class ColorTracker3:  # fork
-    def __init__(self, frame, colorSelector):
+    def __init__(self, frame, colorSelector, maxStoredPoints=10, minObjectArea=100, maxObjectArea=999999):
         self.frameStored = frame
         self.colorSelector = colorSelector
         self.trackVector = np.array([], dtype=np.int32)
-        self.maxTrackerPoints = 10
+        self.maxTrackerPoints = maxStoredPoints
+        self.minObjectArea = minObjectArea
+        self.maxObjectArea = maxObjectArea
 
     def calculate(self, frame):
         selectedColorFrame = self.colorSelector.makeMaskFromRGB(frame)
@@ -105,6 +107,7 @@ class ColorTracker3:  # fork
         cv2.imshow("mask",selectedColorFrame)
         cv2.waitKey(1)
 
+        #no conturs found so return fnc
         if len(conturs) <= 0:
             return frame
 
@@ -116,7 +119,7 @@ class ColorTracker3:  # fork
         contur = contoursWithAreaSorted[0][0]
         area = contoursWithAreaSorted[0][1]
 
-        if area < 150: #TODO: threshold
+        if area < self.minObjectArea or area > self.maxObjectArea:
             return frame
 
         M = cv2.moments(contur)

@@ -7,7 +7,7 @@ from utils.reader import VideoReader
 import TestScenarios as ts
 import cv2
 
-videoPath = "../data/testVideo1/v2.avi"
+videoPath = 0#"../data/testVideo1/v2.avi"
 maskPath = None #"../data/testVideo1/m.png"
 
 tr = ts.TestScenario_Trackers()

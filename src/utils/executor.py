@@ -61,13 +61,13 @@ class TestManager:
             print(f"stopwatch result: {self.stopwatch.hadleResult()}")
             self.stopwatch.reset()
 
-            self._presentMask(actualFrame,res)
+            self._presentImgWithMask(actualFrame, res)
             #cv2.imshow(self.windowName, res)
 
             if self.framesToBreak is not None and self.input.getcountedFrames() > self.framesToBreak:
                 cv2.waitKey(0)
 
-    def _presentMask(self, frame, mask):
+    def _presentImgWithMask(self, frame, mask):
         copyOfFrame = frame.copy()
 
         if len(mask.shape) > 2:

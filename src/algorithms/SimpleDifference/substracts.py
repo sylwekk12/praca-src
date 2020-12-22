@@ -51,7 +51,7 @@ class SubstractorWithBufferDampingEuler:
         #resultFrame = cv2.Laplacian(resultFrame, cv2.CV_64F)
         return cv2.convertScaleAbs(resultFrame)
 
-class SubstractorWithBufferDampingArrth:
+class SubstractorWithBufferArrth:
     def __init__(self, frameContainer, a=1):
         self.frameContainer = frameContainer
         self.containerCapacity = len(self.frameContainer)
@@ -73,7 +73,7 @@ class SubstractorWithBufferDampingArrth:
         self.frameContainer.append(frame)
         return cv2.convertScaleAbs(resultFrame)
 
-class SubstractorWithBufferDampingLinGeom:
+class SubstractorWithBufferLinGeom:
     def __init__(self, frameContainer, a=1):
         self.frameContainer = frameContainer
         self.containerCapacity = len(self.frameContainer)
